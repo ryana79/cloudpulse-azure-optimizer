@@ -47,7 +47,10 @@ app.include_router(copilot.router)
 
 @app.on_event("startup")
 def startup() -> None:
-    if settings.environment.lower() in {"prod", "production"} and settings.mock_mode:
-        raise RuntimeError("MOCK_MODE cannot be enabled in production")
+    if settings.environment.lower() in {"prod", "production"}:
+        if settings.mock_mode:
+            raise RuntimeError("MOCK_MODE cannot be enabled in production")
+        if not settings.azure_client_id or not settings.azure_client_secret:
+            raise RuntimeError("Azure client credentials must be set in production")
     Base.metadata.create_all(bind=engine)
 

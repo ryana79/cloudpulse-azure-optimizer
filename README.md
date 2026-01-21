@@ -103,3 +103,7 @@ git push -u origin main
 
 See `SECURITY.md` and `docs/threat-model-lite.md`.
 
+## Production Checklist
+
+See `docs/production-checklist.md` for deployment readiness steps.
+

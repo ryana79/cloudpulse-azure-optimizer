@@ -15,7 +15,11 @@ class InMemoryRateLimiter:
         window_start = now - 60
         bucket = [t for t in self._requests[key] if t >= window_start]
         self._requests[key] = bucket
-        if len(bucket) >= settings.rate_limit_per_min + settings.rate_limit_burst:
+        if settings.environment.lower() in {"prod", "production"}:
+            limit = settings.rate_limit_per_min_prod + settings.rate_limit_burst_prod
+        else:
+            limit = settings.rate_limit_per_min + settings.rate_limit_burst
+        if len(bucket) >= limit:
             return False
         self._requests[key].append(now)
         return True

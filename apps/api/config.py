@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     rate_limit_per_min: int = Field(default=30, alias="RATE_LIMIT_PER_MIN")
     rate_limit_burst: int = Field(default=10, alias="RATE_LIMIT_BURST")
+    rate_limit_per_min_prod: int = Field(default=120, alias="RATE_LIMIT_PER_MIN_PROD")
+    rate_limit_burst_prod: int = Field(default=30, alias="RATE_LIMIT_BURST_PROD")
 
     anomaly_z_threshold: float = Field(default=3.0, alias="ANOMALY_Z_THRESHOLD")
     anomaly_min_abs: float = Field(default=5.0, alias="ANOMALY_MIN_ABS")
