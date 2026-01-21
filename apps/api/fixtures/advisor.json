@@ -1,0 +1,15 @@
+[
+  {
+    "id": "advisor-001",
+    "category": "Cost",
+    "impact": "High",
+    "shortDescription": {
+      "problem": "VM is underutilized",
+      "solution": "Resize VM to a smaller SKU"
+    },
+    "extendedProperties": {
+      "annualSavings": 240.0
+    }
+  }
+]
+
