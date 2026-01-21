@@ -3,7 +3,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=(".env", "../.env", "../../.env"),
+        env_file_encoding="utf-8",
+    )
+
+    environment: str = Field(default="dev", alias="ENV")
 
     frontend_origin: str = Field(default="http://localhost:3000", alias="FRONTEND_ORIGIN")
     api_host: str = Field(default="127.0.0.1", alias="API_HOST")

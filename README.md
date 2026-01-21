@@ -24,7 +24,7 @@ CloudPulse is a multi-tenant Azure Cloud Optimization Dashboard. It uses Microso
 
 ### Setup
 
-1) Copy `.env.example` to `.env` and fill values.
+1) Create API env at `apps/api/.env` and web env at `apps/web/.env.local`.
 2) Install deps:
    - `cd apps/api && poetry install`
    - `cd apps/web && npm install`
@@ -59,6 +59,22 @@ NEXT_PUBLIC_AZURE_CLIENT_ID=your-client-id
 NEXT_PUBLIC_AZURE_AUTHORITY=https://login.microsoftonline.com/common
 NEXT_PUBLIC_AZURE_REDIRECT_URI=http://localhost:3000/login
 NEXT_PUBLIC_MOCK_MODE=1
+```
+
+## Environment Variables (API)
+
+Create `apps/api/.env`:
+
+```
+FRONTEND_ORIGIN=http://localhost:3000
+DATABASE_URL=sqlite:///./cloudpulse.db
+MOCK_MODE=1
+AZURE_CLIENT_ID=your-client-id
+AZURE_CLIENT_SECRET=your-client-secret
+AZURE_TENANT_ID=common
+GROK_API_KEY=your-grok-key
+GROK_MODEL=grok-4-latest
+ENV=dev
 ```
 
 ## Dependency Locks
