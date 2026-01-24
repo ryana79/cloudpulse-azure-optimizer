@@ -128,98 +128,133 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen">
       <TopNav />
-      <main className="mx-auto max-w-6xl space-y-6 px-6 py-8">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <main className="mx-auto max-w-6xl space-y-8 px-6 py-10">
+        <header className="flex flex-wrap items-center justify-between gap-6">
+          <div>
+            <p className="text-xs uppercase tracking-[0.4em] text-cyan-300/70">Command Center</p>
+            <h1 className="text-3xl font-semibold text-white">Dashboard</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">
+              Monitor 30-day spend momentum, anomaly bursts, and optimization signals across
+              subscriptions.
+            </p>
+          </div>
+          {(mockMode || demoMode) && (
+            <button
+              onClick={regenerateMock}
+              className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-5 py-2 text-xs font-semibold text-cyan-200 transition hover:border-cyan-300 hover:text-cyan-100"
+            >
+              Regenerate sample dataset
+            </button>
+          )}
+        </header>
         {summary && (
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded border border-slate-800 bg-slate-900 p-4">
-              <p className="text-sm text-slate-400">30d Cost</p>
-              <p className="text-2xl font-semibold">${summary.cost_total_30d.toFixed(2)}</p>
+            <div className="glass-panel rounded-3xl p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">30d Cost</p>
+              <p className="mt-3 text-3xl font-semibold text-white">
+                ${summary.cost_total_30d.toFixed(2)}
+              </p>
+              <p className="mt-2 text-xs text-slate-400">+4.2% vs prior window</p>
             </div>
-            <div className="rounded border border-slate-800 bg-slate-900 p-4">
-              <p className="text-sm text-slate-400">Findings</p>
-              <p className="text-2xl font-semibold">{summary.findings_count}</p>
+            <div className="glass-panel rounded-3xl p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Findings</p>
+              <p className="mt-3 text-3xl font-semibold text-white">{summary.findings_count}</p>
+              <p className="mt-2 text-xs text-slate-400">6 high-priority</p>
             </div>
-            <div className="rounded border border-slate-800 bg-slate-900 p-4">
-              <p className="text-sm text-slate-400">Subscription</p>
-              <p className="text-xs text-slate-300">{subscriptionId}</p>
+            <div className="glass-panel rounded-3xl p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Subscription</p>
+              <p className="mt-3 text-sm text-white">{subscriptionId || "Not selected"}</p>
+              <p className="mt-2 text-xs text-slate-400">Demo tenant</p>
             </div>
           </div>
         )}
-        <div className="rounded border border-slate-800 bg-slate-900 p-4">
-          <p className="mb-2 text-sm text-slate-400">Cost trend (30d)</p>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={costs}>
-                <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="cost" stroke="#60a5fa" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
+        <div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
+          <div className="glass-panel rounded-3xl p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                Cost trend (30d)
+              </p>
+              <span className="rounded-full border border-slate-700/70 px-3 py-1 text-xs text-slate-300">
+                Daily granularity
+              </span>
+            </div>
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={costs}>
+                  <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="cost" stroke="#38bdf8" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-        {(mockMode || demoMode) && (
-          <button
-            onClick={regenerateMock}
-            className="rounded border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-200"
-          >
-            Regenerate sample dataset
-          </button>
-        )}
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded border border-slate-800 bg-slate-900 p-4">
-            <p className="mb-2 text-sm text-slate-400">Top spend by service</p>
-            <ul className="space-y-1 text-sm text-slate-200">
+          <div className="glass-panel rounded-3xl p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+              Top spend by service
+            </p>
+            <ul className="mt-4 space-y-3 text-sm text-slate-200">
               {topServices.map(([service, count]) => (
-                <li key={service} className="flex justify-between">
-                  <span>{service}</span>
+                <li
+                  key={service}
+                  className="flex items-center justify-between rounded-2xl border border-slate-800/70 bg-slate-950/40 px-4 py-3"
+                >
+                  <span className="font-semibold text-white">{service}</span>
                   <span className="text-slate-400">{count}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="rounded border border-slate-800 bg-slate-900 p-4">
-            <p className="mb-2 text-sm text-slate-400">Recent anomalies</p>
-            <ul className="space-y-2 text-sm text-slate-200">
+        </div>
+        <div className="grid gap-6 lg:grid-cols-[0.6fr_1.4fr]">
+          <div className="glass-panel rounded-3xl p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Recent anomalies</p>
+            <ul className="mt-4 space-y-3 text-sm text-slate-200">
               {anomalies.slice(0, 4).map((a) => (
-                <li key={a.id} className="rounded border border-slate-800 p-2">
-                  <p>
-                    Spike in {a.scope_type} {a.scope_value} on {a.date}
+                <li key={a.id} className="rounded-2xl border border-slate-800/70 bg-slate-950/40 p-3">
+                  <p className="text-white">
+                    Spike in {a.scope_type} {a.scope_value}
                   </p>
-                  <p className="text-xs text-slate-400">z={a.z_score.toFixed(2)}</p>
+                  <p className="text-xs text-slate-400">
+                    {a.date} · z={a.z_score.toFixed(2)} · ${a.cost.toFixed(2)}
+                  </p>
                 </li>
               ))}
             </ul>
           </div>
-        </div>
-        <div className="rounded border border-slate-800 bg-slate-900 p-4 space-y-3">
-          <p className="text-sm text-slate-400">Copilot</p>
-          <textarea
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            placeholder="Why did my cost spike?"
-            className="w-full rounded border border-slate-700 bg-slate-950 p-2 text-sm"
-            rows={3}
-          />
-          <button
-            onClick={askCopilot}
-            className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-          >
-            Ask Copilot
-          </button>
-          {copilotAnswer && (
-            <div className="rounded border border-slate-800 bg-slate-950 p-3 text-sm text-slate-200">
-              {copilotAnswer}
+          <div className="glass-panel rounded-3xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Copilot</p>
+              <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
+                Demo mode
+              </span>
             </div>
-          )}
-          {copilotWarnings.length > 0 && (
-            <ul className="text-xs text-amber-300">
-              {copilotWarnings.map((warning) => (
-                <li key={warning}>{warning}</li>
-              ))}
-            </ul>
-          )}
+            <textarea
+              value={question}
+              onChange={(event) => setQuestion(event.target.value)}
+              placeholder="Why did my cost spike?"
+              className="w-full rounded-2xl border border-slate-700/70 bg-slate-950/60 p-3 text-sm text-slate-200"
+              rows={3}
+            />
+            <button
+              onClick={askCopilot}
+              className="w-fit rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-5 py-2 text-sm font-semibold text-slate-950"
+            >
+              Ask Copilot
+            </button>
+            {copilotAnswer && (
+              <div className="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-200">
+                {copilotAnswer}
+              </div>
+            )}
+            {copilotWarnings.length > 0 && (
+              <ul className="text-xs text-amber-300">
+                {copilotWarnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
         {error && <p className="text-xs text-red-400">{error}</p>}
       </main>

@@ -83,21 +83,41 @@ export default function ReportPage() {
   return (
     <div className="min-h-screen">
       <TopNav />
-      <main className="mx-auto max-w-4xl space-y-6 px-6 py-8">
-        <h1 className="text-2xl font-semibold">Optimization Report</h1>
-        <button
-          onClick={exportMarkdown}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-        >
-          Download Markdown Report
-        </button>
-        <div className="space-y-2">
-          {findings.map((f) => (
-            <div key={f.id} className="rounded border border-slate-800 bg-slate-900 p-3">
-              <p className="text-sm font-semibold">{f.title}</p>
-              <p className="text-xs text-slate-400">{f.rule_id}</p>
-            </div>
-          ))}
+      <main className="mx-auto max-w-5xl space-y-8 px-6 py-10">
+        <header className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.4em] text-cyan-300/70">Report</p>
+            <h1 className="text-3xl font-semibold text-white">Optimization brief</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-300">
+              Export a recruiter-ready summary of the most valuable optimization opportunities.
+            </p>
+          </div>
+          <button
+            onClick={exportMarkdown}
+            className="rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-5 py-2 text-sm font-semibold text-slate-950"
+          >
+            Download Markdown Report
+          </button>
+        </header>
+        <div className="glass-panel rounded-3xl p-6">
+          <div className="grid gap-3">
+            {findings.map((f) => (
+              <div
+                key={f.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/50 px-4 py-3"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-white">{f.title}</p>
+                  <p className="text-xs text-slate-400">{f.rule_id}</p>
+                </div>
+                {f.estimated_savings !== null && (
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
+                    Est. ${f.estimated_savings}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
         {error && <p className="text-xs text-red-400">{error}</p>}
       </main>

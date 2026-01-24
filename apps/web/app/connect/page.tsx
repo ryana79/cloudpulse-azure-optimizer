@@ -79,39 +79,74 @@ export default function ConnectPage() {
   return (
     <div className="min-h-screen">
       <TopNav />
-      <main className="mx-auto max-w-4xl space-y-6 px-6 py-8">
-        <h1 className="text-2xl font-semibold">Connect Azure</h1>
-        <p className="text-slate-300">
-          Select the subscriptions you want CloudPulse to analyze.
-        </p>
-        {subs.length === 0 && (
-          <div className="rounded border border-slate-800 bg-slate-900 p-4 text-sm text-slate-300">
-            No subscriptions found. You may not have RBAC Reader access. Ask your admin to
-            grant Reader on the subscription.
-          </div>
-        )}
-        <div className="space-y-2">
-          {subs.map((sub) => (
-            <label
-              key={sub.id}
-              className="flex items-center gap-3 rounded border border-slate-800 bg-slate-900 px-3 py-2"
+      <main className="mx-auto max-w-5xl space-y-8 px-6 py-10">
+        <header className="space-y-3">
+          <p className="text-xs uppercase tracking-[0.4em] text-cyan-300/70">Connect</p>
+          <h1 className="text-3xl font-semibold text-white">Select Azure subscriptions</h1>
+          <p className="max-w-2xl text-sm text-slate-300">
+            In demo mode, CloudPulse uses a curated dataset to simulate subscription-level
+            telemetry. Pick the subscriptions you want to analyze and generate insights.
+          </p>
+        </header>
+        <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
+          <section className="glass-panel rounded-3xl p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+              Subscription inventory
+            </p>
+            {subs.length === 0 ? (
+              <div className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-300">
+                No subscriptions found. You may not have RBAC Reader access. Ask your admin to
+                grant Reader on the subscription.
+              </div>
+            ) : (
+              <div className="mt-4 space-y-3">
+                {subs.map((sub) => (
+                  <label
+                    key={sub.id}
+                    className={`flex items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/40 px-4 py-3 text-sm text-slate-200 transition ${
+                      selected.includes(sub.id) ? "accent-ring" : ""
+                    }`}
+                  >
+                    <div>
+                      <p className="font-semibold text-white">{sub.display_name}</p>
+                      <p className="text-xs text-slate-400">ID: {sub.id}</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(sub.id)}
+                      onChange={() => toggle(sub.id)}
+                      className="h-4 w-4 accent-cyan-400"
+                    />
+                  </label>
+                ))}
+              </div>
+            )}
+          </section>
+          <aside className="glass-panel rounded-3xl p-6 space-y-4">
+            <h2 className="text-lg font-semibold text-white">Ingestion summary</h2>
+            <ul className="space-y-3 text-sm text-slate-300">
+              <li className="flex items-center justify-between">
+                <span>Selected</span>
+                <span className="text-white">{selected.length}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span>Dataset</span>
+                <span className="text-white">Demo fixtures</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span>Runtime</span>
+                <span className="text-white">~5s</span>
+              </li>
+            </ul>
+            <button
+              onClick={save}
+              className="w-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20"
             >
-              <input
-                type="checkbox"
-                checked={selected.includes(sub.id)}
-                onChange={() => toggle(sub.id)}
-              />
-              <span>{sub.display_name}</span>
-            </label>
-          ))}
+              Save and Ingest
+            </button>
+            {error && <p className="text-xs text-red-400">{error}</p>}
+          </aside>
         </div>
-        <button
-          onClick={save}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-        >
-          Save and Ingest
-        </button>
-        {error && <p className="text-xs text-red-400">{error}</p>}
       </main>
     </div>
   );
