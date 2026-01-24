@@ -10,6 +10,7 @@ import { apiFetch, getAccessToken } from "@/lib/api";
 
 type Finding = {
   id: string;
+  subscription_id: string;
   rule_id: string;
   title: string;
   severity: string;
