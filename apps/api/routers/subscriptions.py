@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from auth.deps import UserContext, get_bearer_token, get_current_user
+from auth.deps import UserContext, get_bearer_token, get_current_user, is_demo_request
 from azure.obo import acquire_obo_token
 from azure.subscriptions import list_subscriptions
 from config import settings
@@ -18,9 +18,10 @@ router = APIRouter()
 async def subscriptions(
     user: UserContext = Depends(get_current_user),
     token: str = Depends(get_bearer_token),
+    demo: bool = Depends(is_demo_request),
     session: Session = Depends(get_session),
 ) -> list[SubscriptionResponse]:
-    if settings.mock_mode:
+    if settings.mock_mode or demo:
         fixtures = load_fixture("subscriptions.json")
         for sub in fixtures:
             session.merge(

@@ -17,10 +17,10 @@ export const msalInstance = new PublicClientApplication({
 });
 
 export const loginRequest = {
-  scopes: ["User.Read", "openid", "profile", "email"],
+  scopes: ["openid", "profile", "email"],
 };
 
 export const apiRequest = {
-  scopes: ["https://management.azure.com/.default"],
+  scopes: ["https://management.azure.com/user_impersonation"],
 };
 

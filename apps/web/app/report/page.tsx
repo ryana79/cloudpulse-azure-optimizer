@@ -16,6 +16,16 @@ type Finding = {
 };
 
 const mockMode = process.env.NEXT_PUBLIC_MOCK_MODE === "1";
+const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
+
+function hasDemoSession(): boolean {
+  if (!demoMode) return false;
+  if (typeof window === "undefined") return true;
+  if (sessionStorage.getItem("cloudpulse-demo") !== "1") {
+    sessionStorage.setItem("cloudpulse-demo", "1");
+  }
+  return true;
+}
 
 export default function ReportPage() {
   const { accounts } = useMsal();
@@ -35,11 +45,15 @@ export default function ReportPage() {
       }
     };
 
-    if (!mockMode && accounts.length === 0) {
+    if (!mockMode && !demoMode && accounts.length === 0) {
       router.push("/login");
       return;
     }
-    if (mockMode && !sessionStorage.getItem("cloudpulse-demo")) {
+    if (mockMode && !hasDemoSession()) {
+      router.push("/login");
+      return;
+    }
+    if (demoMode && !hasDemoSession() && accounts.length === 0) {
       router.push("/login");
       return;
     }

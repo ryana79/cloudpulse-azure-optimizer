@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { loginRequest } from "@/lib/auth";
 
 const mockMode = process.env.NEXT_PUBLIC_MOCK_MODE === "1";
+const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
 
 export default function LoginPage() {
   const { instance, accounts } = useMsal();
@@ -14,6 +15,12 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (demoMode) {
+      sessionStorage.setItem("cloudpulse-demo", "1");
+      router.push("/connect");
+      return;
+    }
+
     instance
       .handleRedirectPromise()
       .then((result) => {
@@ -39,22 +46,26 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-6 px-6 text-center">
-      <h1 className="text-3xl font-semibold">Sign in</h1>
+      <h1 className="text-3xl font-semibold">Welcome</h1>
       <p className="text-slate-300">
-        Use your Microsoft/Entra ID account to access your Azure data.
+        {demoMode
+          ? "Demo mode is enabled. You will be redirected automatically."
+          : "Use your Microsoft/Entra ID account to access your Azure data."}
       </p>
-      <button
-        onClick={signIn}
-        className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
-      >
-        Sign in with Microsoft
-      </button>
-      {mockMode && (
+      {!demoMode && (
+        <button
+          onClick={signIn}
+          className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
+        >
+          Sign in with Microsoft
+        </button>
+      )}
+      {(mockMode || demoMode) && !demoMode && (
         <button
           onClick={demoLogin}
           className="rounded border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200"
         >
-          Demo Login (Mock Mode)
+          View Demo Data
         </button>
       )}
       {accounts.length > 0 && (

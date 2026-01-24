@@ -47,7 +47,16 @@ CloudPulse is a multi-tenant Azure Cloud Optimization Dashboard. It uses Microso
 - `apps/web`: Next.js frontend
 - `docs`: architecture + security notes
 
-## Mock Mode
+## Staged Demo (No Sign-In)
+
+For recruiter demos, you can run CloudPulse without any Microsoft sign-in:
+
+1) Set `NEXT_PUBLIC_DEMO_MODE=1` in `apps/web/.env.local`.
+2) Start the app (`make dev`) and open `/connect` or `/dashboard`.
+
+The frontend will auto-enter demo mode and call the API with `X-Demo-Mode=1`, which triggers fixture-backed ingestion.
+
+## Mock Mode (Signed In)
 
 Set `MOCK_MODE=1` and use Demo Login on `/login`. This loads fixtures and populates the DB for dashboards, anomalies, and copilot.
 
@@ -58,7 +67,8 @@ NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000
 NEXT_PUBLIC_AZURE_CLIENT_ID=your-client-id
 NEXT_PUBLIC_AZURE_AUTHORITY=https://login.microsoftonline.com/common
 NEXT_PUBLIC_AZURE_REDIRECT_URI=http://localhost:3000/login
-NEXT_PUBLIC_MOCK_MODE=1
+NEXT_PUBLIC_MOCK_MODE=0
+NEXT_PUBLIC_DEMO_MODE=1
 ```
 
 ## Environment Variables (API)
@@ -68,7 +78,8 @@ Create `apps/api/.env`:
 ```
 FRONTEND_ORIGIN=http://localhost:3000
 DATABASE_URL=sqlite:///./cloudpulse.db
-MOCK_MODE=1
+MOCK_MODE=0
+DEMO_MODE=0
 AZURE_CLIENT_ID=your-client-id
 AZURE_CLIENT_SECRET=your-client-secret
 AZURE_TENANT_ID=common

@@ -4,6 +4,7 @@
 
 - `ENV=prod`
 - `MOCK_MODE=0`
+- `DEMO_MODE=0` (set to 1 only for demo environments)
 - `AZURE_CLIENT_ID` (App registration Client ID)
 - `AZURE_CLIENT_SECRET`
 - `AZURE_TENANT_ID=common`
@@ -18,6 +19,7 @@
 - `NEXT_PUBLIC_AZURE_AUTHORITY=https://login.microsoftonline.com/common`
 - `NEXT_PUBLIC_AZURE_REDIRECT_URI=https://your-domain/login`
 - `NEXT_PUBLIC_MOCK_MODE=0`
+- `NEXT_PUBLIC_DEMO_MODE=0` (set to 1 only for demo environments)
 
 ## Entra ID App Registration
 

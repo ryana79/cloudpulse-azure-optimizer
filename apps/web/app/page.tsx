@@ -9,10 +9,10 @@ export default function HomePage() {
         copilot.
       </p>
       <Link
-        href="/login"
+        href="/connect"
         className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white"
       >
-        Sign in with Microsoft
+        Open demo dashboard
       </Link>
     </main>
   );

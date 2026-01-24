@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     database_url: str = Field(default="sqlite:///./cloudpulse.db", alias="DATABASE_URL")
 
     mock_mode: bool = Field(default=False, alias="MOCK_MODE")
+    demo_mode: bool = Field(default=False, alias="DEMO_MODE")
     mock_tenant_id: str = Field(default="11111111-1111-1111-1111-111111111111", alias="MOCK_TENANT_ID")
     mock_user_id: str = Field(default="22222222-2222-2222-2222-222222222222", alias="MOCK_USER_ID")
     mock_user_email: str = Field(default="demo@cloudpulse.dev", alias="MOCK_USER_EMAIL")

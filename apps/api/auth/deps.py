@@ -14,8 +14,19 @@ class UserContext:
     name: str | None
 
 
-def get_current_user(authorization: str | None = Header(default=None)) -> UserContext:
-    if settings.mock_mode:
+def _is_demo_mode(x_demo_mode: str | None) -> bool:
+    if not x_demo_mode:
+        return False
+    if not settings.demo_mode:
+        return x_demo_mode == "1"
+    return x_demo_mode == "1"
+
+
+def get_current_user(
+    authorization: str | None = Header(default=None),
+    x_demo_mode: str | None = Header(default=None),
+) -> UserContext:
+    if settings.mock_mode or _is_demo_mode(x_demo_mode):
         return UserContext(
             tenant_id=settings.mock_tenant_id,
             user_id=settings.mock_user_id,
@@ -40,10 +51,17 @@ def get_current_user(authorization: str | None = Header(default=None)) -> UserCo
     )
 
 
-def get_bearer_token(authorization: str | None = Header(default=None)) -> str:
-    if settings.mock_mode:
+def get_bearer_token(
+    authorization: str | None = Header(default=None),
+    x_demo_mode: str | None = Header(default=None),
+) -> str:
+    if settings.mock_mode or _is_demo_mode(x_demo_mode):
         return "mock"
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing token")
     return authorization.replace("Bearer ", "").strip()
+
+
+def is_demo_request(x_demo_mode: str | None = Header(default=None)) -> bool:
+    return _is_demo_mode(x_demo_mode)
 
