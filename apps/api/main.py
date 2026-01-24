@@ -50,7 +50,12 @@ def startup() -> None:
     if settings.environment.lower() in {"prod", "production"}:
         if settings.mock_mode:
             raise RuntimeError("MOCK_MODE cannot be enabled in production")
-        if not settings.azure_client_id or not settings.azure_client_secret:
-            raise RuntimeError("Azure client credentials must be set in production")
+        if (
+            not settings.demo_mode
+            and (not settings.azure_client_id or not settings.azure_client_secret)
+        ):
+            raise RuntimeError(
+                "Azure client credentials must be set in production unless DEMO_MODE=1"
+            )
     Base.metadata.create_all(bind=engine)
 
