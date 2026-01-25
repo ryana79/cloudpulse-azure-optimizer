@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from datetime import date, datetime
-from typing import Any, Iterable
+from typing import Any
 from uuid import uuid4
 
 from sqlalchemy import delete

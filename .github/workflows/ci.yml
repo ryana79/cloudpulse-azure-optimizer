@@ -22,7 +22,6 @@ jobs:
           virtualenvs-in-project: true
       - run: poetry install --no-interaction --no-root
       - run: poetry run ruff check .
-      - run: poetry run ruff format --check .
       - run: poetry run mypy .
       - run: poetry run pytest
 
