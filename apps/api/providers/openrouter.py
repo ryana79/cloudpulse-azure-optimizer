@@ -107,6 +107,17 @@ def _call_openrouter(payload: dict[str, Any]) -> dict[str, Any]:
         return response.json()
 
 
+def _normalize_response(payload: dict[str, Any]) -> dict[str, Any]:
+    answer = payload.get("answer", "")
+    actions = payload.get("actions", [])
+    warnings = payload.get("warnings", ["Never execute commands directly."])
+    if isinstance(actions, str):
+        actions = [actions]
+    if isinstance(warnings, str):
+        warnings = [warnings]
+    return {"answer": answer, "actions": actions, "warnings": warnings}
+
+
 def answer_question(question: str, context_pack: dict[str, Any]) -> dict[str, Any]:
     if settings.mock_mode:
         return {
@@ -131,7 +142,7 @@ def answer_question(question: str, context_pack: dict[str, Any]) -> dict[str, An
     result = _call_openrouter(payload)
     content = result["choices"][0]["message"]["content"]
     try:
-        return json.loads(content)
+        return _normalize_response(json.loads(content))
     except json.JSONDecodeError:
         return {
             "answer": content,
@@ -168,6 +179,6 @@ def generate_remediation(
     result = _call_openrouter(payload)
     content = result["choices"][0]["message"]["content"]
     try:
-        return json.loads(content)
+        return _normalize_response(json.loads(content))
     except json.JSONDecodeError:
         return {"script": content, "warnings": ["Response was not valid JSON."]}
