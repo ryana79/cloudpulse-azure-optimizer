@@ -19,6 +19,10 @@ const bodyFont = Commissioner({
 export const metadata: Metadata = {
   title: "CloudPulse",
   description: "Azure Cloud Optimization Dashboard",
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
