@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from auth.deps import UserContext, get_current_user
 from db.repositories import list_findings
 from db.session import get_session
-from providers.grok import answer_question, build_context_pack, generate_remediation
+from providers.copilot import answer_question, build_context_pack, generate_remediation
 from schemas import CopilotChatRequest, CopilotChatResponse, CopilotRemediateRequest, CopilotRemediateResponse
 from utils.rate_limit import rate_limiter
 
@@ -35,6 +35,11 @@ def copilot_chat(
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Copilot provider request failed.",
+        ) from exc
+    except RuntimeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(exc),
         ) from exc
     return CopilotChatResponse(
         answer=result.get("answer", ""),
@@ -70,6 +75,11 @@ def copilot_remediate(
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Copilot provider request failed.",
+        ) from exc
+    except RuntimeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(exc),
         ) from exc
     return CopilotRemediateResponse(
         script=result.get("script", ""),

@@ -35,6 +35,14 @@ class Settings(BaseSettings):
     grok_api_key: str = Field(default="", alias="GROK_API_KEY")
     grok_base_url: str = Field(default="https://api.x.ai/v1", alias="GROK_BASE_URL")
     grok_model: str = Field(default="grok-2-1212", alias="GROK_MODEL")
+    copilot_provider: str = Field(default="grok", alias="COPILOT_PROVIDER")
+    huggingface_api_key: str = Field(default="", alias="HUGGINGFACE_API_KEY")
+    huggingface_base_url: str = Field(
+        default="https://api-inference.huggingface.co", alias="HUGGINGFACE_BASE_URL"
+    )
+    huggingface_model: str = Field(
+        default="mistralai/Mistral-7B-Instruct-v0.2", alias="HUGGINGFACE_MODEL"
+    )
 
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     rate_limit_per_min: int = Field(default=30, alias="RATE_LIMIT_PER_MIN")
