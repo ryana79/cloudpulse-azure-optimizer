@@ -41,7 +41,7 @@ class Settings(BaseSettings):
         default="https://api-inference.huggingface.co", alias="HUGGINGFACE_BASE_URL"
     )
     huggingface_model: str = Field(
-        default="mistralai/Mistral-7B-Instruct-v0.2", alias="HUGGINGFACE_MODEL"
+        default="Qwen/Qwen3-4B-Instruct-2507", alias="HUGGINGFACE_MODEL"
     )
 
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
