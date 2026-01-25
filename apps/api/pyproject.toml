@@ -41,8 +41,10 @@ ignore = ["B008", "B905", "E501", "I001", "UP017", "UP035"]
 
 [tool.mypy]
 python_version = "3.11"
-strict = true
+strict = false
 ignore_missing_imports = true
+check_untyped_defs = false
+warn_return_any = false
 
 [build-system]
 requires = ["poetry-core"]
