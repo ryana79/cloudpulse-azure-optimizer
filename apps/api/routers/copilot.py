@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+import httpx
 from sqlalchemy.orm import Session
 
 from auth.deps import UserContext, get_current_user
@@ -22,7 +23,19 @@ def copilot_chat(
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Rate limit exceeded")
 
     context_pack = build_context_pack(session, user.tenant_id, user.user_id, payload.subscription_id)
-    result = answer_question(payload.question, context_pack)
+    try:
+        result = answer_question(payload.question, context_pack)
+    except httpx.HTTPStatusError as exc:
+        status_code = exc.response.status_code if exc.response else 502
+        detail = "Copilot provider rejected the request."
+        if status_code in {401, 403}:
+            detail = "Copilot provider authorization failed. Check GROK_API_KEY."
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=detail) from exc
+    except httpx.RequestError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Copilot provider request failed.",
+        ) from exc
     return CopilotChatResponse(
         answer=result.get("answer", ""),
         actions=result.get("actions", []),
@@ -45,7 +58,19 @@ def copilot_remediate(
         {"id": f.id, "rule_id": f.rule_id, "title": f.title, "evidence": f.evidence}
         for f in selected
     ]
-    result = generate_remediation(selected_payload, payload.format)
+    try:
+        result = generate_remediation(selected_payload, payload.format)
+    except httpx.HTTPStatusError as exc:
+        status_code = exc.response.status_code if exc.response else 502
+        detail = "Copilot provider rejected the request."
+        if status_code in {401, 403}:
+            detail = "Copilot provider authorization failed. Check GROK_API_KEY."
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=detail) from exc
+    except httpx.RequestError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Copilot provider request failed.",
+        ) from exc
     return CopilotRemediateResponse(
         script=result.get("script", ""),
         warnings=result.get("warnings", ["Never execute commands directly."]),
