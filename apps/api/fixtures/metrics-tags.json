@@ -1,0 +1,14 @@
+[
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-dev/providers/Microsoft.Compute/virtualMachines/vm-lab",
+    "name": "vm-lab",
+    "resource_type": "Microsoft.Compute/virtualMachines",
+    "estimated_savings": 15.0,
+    "samples": [
+      {"timestamp": "2026-01-15T00:00:00", "value": 28.0},
+      {"timestamp": "2026-01-16T00:00:00", "value": 31.4},
+      {"timestamp": "2026-01-17T00:00:00", "value": 26.7},
+      {"timestamp": "2026-01-18T00:00:00", "value": 29.9}
+    ]
+  }
+]

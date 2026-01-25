@@ -1,0 +1,22 @@
+[
+  {"date": "2026-01-02", "cost": 7.2, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-03", "cost": 6.8, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-04", "cost": 7.4, "service": "Storage", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-05", "cost": 7.0, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-06", "cost": 7.6, "service": "Networking", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-07", "cost": 6.9, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-08", "cost": 7.3, "service": "Storage", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-09", "cost": 7.1, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-10", "cost": 7.5, "service": "Networking", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-11", "cost": 6.7, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-12", "cost": 7.2, "service": "Storage", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-13", "cost": 7.0, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-14", "cost": 7.4, "service": "Networking", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-15", "cost": 7.1, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-16", "cost": 7.3, "service": "Storage", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-17", "cost": 6.9, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-18", "cost": 7.5, "service": "Networking", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-19", "cost": 7.2, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"},
+  {"date": "2026-01-20", "cost": 7.3, "service": "Storage", "resource_group": "rg-lab", "tag": "env:dev"},
+  {"date": "2026-01-21", "cost": 7.0, "service": "Compute", "resource_group": "rg-dev", "tag": "env:dev"}
+]

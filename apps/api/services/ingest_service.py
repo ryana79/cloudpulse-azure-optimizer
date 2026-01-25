@@ -54,8 +54,10 @@ def ingest_mock(session: Session, user: UserContext, subscription_ids: list[str]
     run_id = uuid4().hex
     total_findings = 0
     total_anomalies = 0
+    total_resources = 0
     for sub in subscriptions:
         subscription_id = sub["subscription_id"]
+        scenario = sub.get("scenario")
         _clear_existing(session, user.tenant_id, user.user_id, subscription_id)
 
         session.merge(
@@ -67,7 +69,10 @@ def ingest_mock(session: Session, user: UserContext, subscription_ids: list[str]
             )
         )
 
-        inventory = load_fixture("inventory.json")
+        inventory = _apply_subscription_scope(
+            load_fixture("inventory.json", scenario), subscription_id
+        )
+        total_resources += len(inventory)
         for item in inventory:
             session.add(
                 ResourceInventory(
@@ -82,7 +87,7 @@ def ingest_mock(session: Session, user: UserContext, subscription_ids: list[str]
                 )
             )
 
-        costs = load_fixture("cost.json")
+        costs = load_fixture("cost.json", scenario)
         for item in costs:
             session.add(
                 CostDaily(
@@ -97,8 +102,10 @@ def ingest_mock(session: Session, user: UserContext, subscription_ids: list[str]
                 )
             )
 
-        advisor = load_fixture("advisor.json")
-        metrics = load_fixture("metrics.json")
+        advisor = load_fixture("advisor.json", scenario)
+        metrics = _apply_subscription_scope(
+            load_fixture("metrics.json", scenario), subscription_id
+        )
 
         findings: list[Any] = []
         findings.extend(missing_required_tags(inventory))
@@ -160,7 +167,7 @@ def ingest_mock(session: Session, user: UserContext, subscription_ids: list[str]
             status="success",
             started_at=datetime.utcnow(),
             finished_at=datetime.utcnow(),
-            resources_ingested=len(load_fixture("inventory.json")),
+            resources_ingested=total_resources if subscriptions else 0,
             findings_created=total_findings if subscriptions else 0,
             anomalies_created=total_anomalies if subscriptions else 0,
             error_message=None,
@@ -168,6 +175,18 @@ def ingest_mock(session: Session, user: UserContext, subscription_ids: list[str]
     )
     session.commit()
     return run_id
+
+
+def _apply_subscription_scope(
+    items: list[dict[str, Any]], subscription_id: str
+) -> list[dict[str, Any]]:
+    for item in items:
+        resource_id = item.get("resource_id")
+        if isinstance(resource_id, str):
+            item["resource_id"] = resource_id.replace(
+                "/subscriptions/sub-001", f"/subscriptions/{subscription_id}"
+            )
+    return items
 
 
 async def ingest_real(

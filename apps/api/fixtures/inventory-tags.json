@@ -1,0 +1,34 @@
+[
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-dev/providers/Microsoft.Compute/virtualMachines/vm-lab",
+    "name": "vm-lab",
+    "resource_type": "Microsoft.Compute/virtualMachines",
+    "region": "centralus",
+    "tags": {"env": "dev"},
+    "properties": {}
+  },
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-dev/providers/Microsoft.Compute/disks/disk-attached",
+    "name": "disk-attached",
+    "resource_type": "Microsoft.Compute/disks",
+    "region": "centralus",
+    "tags": {"env": "dev", "owner": "labs"},
+    "properties": {"managedBy": "/subscriptions/sub-001/resourceGroups/rg-dev/providers/Microsoft.Compute/virtualMachines/vm-lab"}
+  },
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-lab/providers/Microsoft.Network/publicIPAddresses/ip-assigned",
+    "name": "ip-assigned",
+    "resource_type": "Microsoft.Network/publicIPAddresses",
+    "region": "centralus",
+    "tags": {"env": "dev"},
+    "properties": {"ipConfiguration": {"id": "config-1"}}
+  },
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-lab/providers/Microsoft.Compute/snapshots/snap-recent",
+    "name": "snap-recent",
+    "resource_type": "Microsoft.Compute/snapshots",
+    "region": "centralus",
+    "tags": {},
+    "properties": {"timeCreated": "2026-01-20T00:00:00Z"}
+  }
+]

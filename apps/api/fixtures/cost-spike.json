@@ -1,0 +1,22 @@
+[
+  {"date": "2026-01-02", "cost": 38.2, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-03", "cost": 39.1, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-04", "cost": 37.8, "service": "Storage", "resource_group": "rg-data", "tag": "env:prod"},
+  {"date": "2026-01-05", "cost": 40.4, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-06", "cost": 41.0, "service": "Networking", "resource_group": "rg-net", "tag": "env:prod"},
+  {"date": "2026-01-07", "cost": 39.6, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-08", "cost": 38.9, "service": "Storage", "resource_group": "rg-data", "tag": "env:prod"},
+  {"date": "2026-01-09", "cost": 39.2, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-10", "cost": 40.1, "service": "Networking", "resource_group": "rg-net", "tag": "env:prod"},
+  {"date": "2026-01-11", "cost": 39.0, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-12", "cost": 40.5, "service": "Storage", "resource_group": "rg-data", "tag": "env:prod"},
+  {"date": "2026-01-13", "cost": 39.7, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-14", "cost": 40.3, "service": "Networking", "resource_group": "rg-net", "tag": "env:prod"},
+  {"date": "2026-01-15", "cost": 41.2, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-16", "cost": 40.8, "service": "Storage", "resource_group": "rg-data", "tag": "env:prod"},
+  {"date": "2026-01-17", "cost": 39.9, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-18", "cost": 40.6, "service": "Networking", "resource_group": "rg-net", "tag": "env:prod"},
+  {"date": "2026-01-19", "cost": 182.5, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"},
+  {"date": "2026-01-20", "cost": 41.1, "service": "Storage", "resource_group": "rg-data", "tag": "env:prod"},
+  {"date": "2026-01-21", "cost": 40.0, "service": "Compute", "resource_group": "rg-app", "tag": "env:prod"}
+]
