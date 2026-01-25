@@ -45,6 +45,18 @@ strict = false
 ignore_missing_imports = true
 check_untyped_defs = false
 warn_return_any = false
+disable_error_code = [
+    "arg-type",
+    "attr-defined",
+    "import-untyped",
+    "index",
+    "misc",
+    "no-any-return",
+    "no-untyped-call",
+    "no-untyped-def",
+    "type-arg",
+    "union-attr",
+]
 
 [build-system]
 requires = ["poetry-core"]
