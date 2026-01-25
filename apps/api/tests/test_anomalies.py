@@ -5,7 +5,8 @@ from engine.anomalies import CostPoint, detect_anomalies
 
 def test_detect_anomalies_flags_spike() -> None:
     start = date.today() - timedelta(days=20)
-    points = [CostPoint(date=start + timedelta(days=i), cost=10.0) for i in range(14)]
+    points = [CostPoint(date=start + timedelta(days=i), cost=10.0) for i in range(13)]
+    points += [CostPoint(date=start + timedelta(days=13), cost=12.0)]
     points += [CostPoint(date=start + timedelta(days=14), cost=10.0)]
     points += [CostPoint(date=start + timedelta(days=15), cost=100.0)]
 

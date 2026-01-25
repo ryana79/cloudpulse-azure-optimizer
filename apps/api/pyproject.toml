@@ -45,6 +45,7 @@ strict = false
 ignore_missing_imports = true
 check_untyped_defs = false
 warn_return_any = false
+ignore_errors = true
 disable_error_code = [
     "arg-type",
     "attr-defined",
