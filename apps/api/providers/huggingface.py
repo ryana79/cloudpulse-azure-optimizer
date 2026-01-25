@@ -24,12 +24,23 @@ def _build_prompt(question: str, context_pack: dict[str, Any]) -> str:
     )
 
 
+def _build_model_list() -> list[str]:
+    models = [settings.huggingface_model.strip()]
+    fallbacks = [
+        model.strip()
+        for model in settings.huggingface_fallback_models.split(",")
+        if model.strip()
+    ]
+    for model in fallbacks:
+        if model not in models:
+            models.append(model)
+    return models
+
+
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=8))
 def _call_hf(prompt: str, temperature: float) -> str:
     if not settings.huggingface_api_key:
         raise RuntimeError("HUGGINGFACE_API_KEY is not set.")
-    model = settings.huggingface_model
-    url = f"{settings.huggingface_base_url}/models/{model}"
     headers = {"Authorization": f"Bearer {settings.huggingface_api_key}"}
     payload = {
         "inputs": prompt,
@@ -39,18 +50,25 @@ def _call_hf(prompt: str, temperature: float) -> str:
             "return_full_text": False,
         },
     }
+    last_error: str | None = None
     with httpx.Client(timeout=30.0) as client:
-        response = client.post(url, headers=headers, json=payload)
-        response.raise_for_status()
-        data = response.json()
-    if isinstance(data, dict) and data.get("error"):
-        raise RuntimeError(data["error"])
-    if not isinstance(data, list) or not data:
-        raise RuntimeError("Unexpected Hugging Face response format.")
-    generated = data[0].get("generated_text")
-    if not generated:
-        raise RuntimeError("Hugging Face response missing generated_text.")
-    return generated
+        for model in _build_model_list():
+            url = f"{settings.huggingface_base_url}/models/{model}"
+            response = client.post(url, headers=headers, json=payload)
+            if response.status_code == 410:
+                last_error = f"Model not available on serverless API: {model}"
+                continue
+            response.raise_for_status()
+            data = response.json()
+            if isinstance(data, dict) and data.get("error"):
+                raise RuntimeError(data["error"])
+            if not isinstance(data, list) or not data:
+                raise RuntimeError("Unexpected Hugging Face response format.")
+            generated = data[0].get("generated_text")
+            if not generated:
+                raise RuntimeError("Hugging Face response missing generated_text.")
+            return generated
+    raise RuntimeError(last_error or "No Hugging Face models available.")
 
 
 def answer_question(question: str, context_pack: dict[str, Any]) -> dict[str, Any]:

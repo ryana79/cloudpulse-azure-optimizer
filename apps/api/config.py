@@ -41,7 +41,11 @@ class Settings(BaseSettings):
         default="https://api-inference.huggingface.co", alias="HUGGINGFACE_BASE_URL"
     )
     huggingface_model: str = Field(
-        default="Qwen/Qwen3-4B-Instruct-2507", alias="HUGGINGFACE_MODEL"
+        default="google/flan-t5-base", alias="HUGGINGFACE_MODEL"
+    )
+    huggingface_fallback_models: str = Field(
+        default="google/flan-t5-small,distilgpt2",
+        alias="HUGGINGFACE_FALLBACK_MODELS",
     )
 
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
