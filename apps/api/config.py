@@ -32,21 +32,15 @@ class Settings(BaseSettings):
         default="https://management.azure.com/.default", alias="AZURE_SCOPES"
     )
 
-    grok_api_key: str = Field(default="", alias="GROK_API_KEY")
-    grok_base_url: str = Field(default="https://api.x.ai/v1", alias="GROK_BASE_URL")
-    grok_model: str = Field(default="grok-2-1212", alias="GROK_MODEL")
-    copilot_provider: str = Field(default="grok", alias="COPILOT_PROVIDER")
-    huggingface_api_key: str = Field(default="", alias="HUGGINGFACE_API_KEY")
-    huggingface_base_url: str = Field(
-        default="https://api-inference.huggingface.co", alias="HUGGINGFACE_BASE_URL"
+    openrouter_api_key: str = Field(default="", alias="OPENROUTER_API_KEY")
+    openrouter_base_url: str = Field(
+        default="https://openrouter.ai/api/v1", alias="OPENROUTER_BASE_URL"
     )
-    huggingface_model: str = Field(
-        default="google/flan-t5-base", alias="HUGGINGFACE_MODEL"
+    openrouter_model: str = Field(
+        default="liquid/lfm-2.5-1.2b-instruct:free", alias="OPENROUTER_MODEL"
     )
-    huggingface_fallback_models: str = Field(
-        default="google/flan-t5-small,distilgpt2",
-        alias="HUGGINGFACE_FALLBACK_MODELS",
-    )
+    openrouter_referer: str = Field(default="", alias="OPENROUTER_REFERER")
+    openrouter_title: str = Field(default="CloudPulse", alias="OPENROUTER_TITLE")
 
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     rate_limit_per_min: int = Field(default=30, alias="RATE_LIMIT_PER_MIN")
