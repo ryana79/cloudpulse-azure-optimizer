@@ -93,11 +93,15 @@ export default function ReportPage() {
   }, [findings, query, severityFilter, sortBy]);
 
   const totalSavings = findings.reduce((sum, f) => sum + (f.estimated_savings ?? 0), 0);
+  const totalCount = findings.length || 1;
   const highCount = findings.filter((f) => f.severity.toLowerCase() === "high").length;
   const mediumCount = findings.filter(
     (f) => f.severity.toLowerCase() === "medium"
   ).length;
   const lowCount = findings.filter((f) => f.severity.toLowerCase() === "low").length;
+  const highPct = (highCount / totalCount) * 100;
+  const mediumPct = (mediumCount / totalCount) * 100;
+  const lowPct = (lowCount / totalCount) * 100;
 
   const exportMarkdown = () => {
     const lines = ["# CloudPulse Optimization Report", ""];
@@ -154,6 +158,13 @@ export default function ReportPage() {
             <p className="mt-3 text-sm text-slate-200">
               High {highCount} · Medium {mediumCount} · Low {lowCount}
             </p>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-900/70">
+              <div className="flex h-full">
+                <span className="h-full bg-rose-400/70" style={{ width: `${highPct}%` }} />
+                <span className="h-full bg-amber-400/70" style={{ width: `${mediumPct}%` }} />
+                <span className="h-full bg-emerald-400/70" style={{ width: `${lowPct}%` }} />
+              </div>
+            </div>
           </div>
           <div className="glass-panel rounded-3xl px-5 py-4">
             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Format</p>

@@ -1,6 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function TopNav() {
+  const pathname = usePathname();
+  const navItems = [
+    { label: "Connect", href: "/connect" },
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Anomalies", href: "/anomalies" },
+    { label: "Report", href: "/report" },
+  ];
+
   return (
     <nav className="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -14,21 +25,37 @@ export default function TopNav() {
           </div>
         </Link>
         <div className="flex items-center gap-6 text-sm text-slate-300">
-          <Link className="transition hover:text-white" href="/connect">
-            Connect
-          </Link>
-          <Link className="transition hover:text-white" href="/dashboard">
-            Dashboard
-          </Link>
-          <Link className="transition hover:text-white" href="/anomalies">
-            Anomalies
-          </Link>
-          <Link className="transition hover:text-white" href="/report">
-            Report
-          </Link>
-          <span className="hidden rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200 md:inline-flex">
+          <div className="hidden items-center gap-5 md:flex">
+            {navItems.map((item) => {
+              const isActive =
+                pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`transition ${
+                    isActive ? "text-white" : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  <span className="relative">
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute -bottom-2 left-0 h-[2px] w-full rounded-full bg-cyan-400/70" />
+                    )}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+          <span className="hidden rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200 lg:inline-flex">
             Demo Live
           </span>
+          <Link
+            href="/connect"
+            className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-4 py-2 text-xs font-semibold text-cyan-100 transition hover:border-cyan-300 hover:text-white"
+          >
+            Launch demo
+          </Link>
         </div>
       </div>
     </nav>

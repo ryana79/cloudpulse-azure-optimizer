@@ -11,6 +11,11 @@ body {
   background-attachment: fixed;
 }
 
+::selection {
+  background: rgba(56, 189, 248, 0.35);
+  color: #f8fafc;
+}
+
 h1,
 h2,
 h3,

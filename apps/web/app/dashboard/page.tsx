@@ -53,6 +53,7 @@ export default function DashboardPage() {
   const [copilotAnswer, setCopilotAnswer] = useState<string | null>(null);
   const [copilotWarnings, setCopilotWarnings] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -74,6 +75,8 @@ export default function DashboardPage() {
         setAnomalies(anomaliesData);
       } catch (err: any) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -93,6 +96,7 @@ export default function DashboardPage() {
   }, [accounts, router]);
 
   const topServices = useMemo(() => summary?.top_services ?? [], [summary]);
+  const dataMode = mockMode ? "Mock" : demoMode ? "Demo" : "Live";
 
   const askCopilot = async () => {
     try {
@@ -138,6 +142,16 @@ export default function DashboardPage() {
               subscriptions.
             </p>
           </div>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+            <span className="rounded-full border border-slate-700/70 px-3 py-1">
+              Mode: {dataMode}
+            </span>
+            {subscriptionId && (
+              <span className="rounded-full border border-slate-700/70 px-3 py-1">
+                Sub: {subscriptionId.slice(0, 8)}...
+              </span>
+            )}
+          </div>
           {(mockMode || demoMode) && (
             <button
               onClick={regenerateMock}
@@ -147,24 +161,35 @@ export default function DashboardPage() {
             </button>
           )}
         </header>
-        {summary && (
+        {loading && (
+          <div className="grid gap-4 md:grid-cols-3">
+            {["30d Cost", "Findings", "Subscription"].map((label) => (
+              <div key={label} className="glass-panel rounded-3xl p-6">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{label}</p>
+                <div className="mt-4 h-8 w-32 animate-pulse rounded-full bg-slate-800/70" />
+                <div className="mt-3 h-3 w-40 animate-pulse rounded-full bg-slate-800/60" />
+              </div>
+            ))}
+          </div>
+        )}
+        {!loading && summary && (
           <div className="grid gap-4 md:grid-cols-3">
             <div className="glass-panel rounded-3xl p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">30d Cost</p>
               <p className="mt-3 text-3xl font-semibold text-white">
                 ${summary.cost_total_30d.toFixed(2)}
               </p>
-              <p className="mt-2 text-xs text-slate-400">+4.2% vs prior window</p>
+              <p className="mt-2 text-xs text-slate-400">Rolling 30-day window</p>
             </div>
             <div className="glass-panel rounded-3xl p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Findings</p>
               <p className="mt-3 text-3xl font-semibold text-white">{summary.findings_count}</p>
-              <p className="mt-2 text-xs text-slate-400">6 high-priority</p>
+              <p className="mt-2 text-xs text-slate-400">Optimization signals queued</p>
             </div>
             <div className="glass-panel rounded-3xl p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Subscription</p>
               <p className="mt-3 text-sm text-white">{subscriptionId || "Not selected"}</p>
-              <p className="mt-2 text-xs text-slate-400">Demo tenant</p>
+              <p className="mt-2 text-xs text-slate-400">{dataMode} dataset</p>
             </div>
           </div>
         )}
@@ -179,14 +204,22 @@ export default function DashboardPage() {
               </span>
             </div>
             <div className="mt-4 h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={costs}>
-                  <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="cost" stroke="#38bdf8" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
+              {loading ? (
+                <div className="h-full w-full animate-pulse rounded-2xl bg-slate-900/60" />
+              ) : costs.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={costs}>
+                    <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                    <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="cost" stroke="#38bdf8" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center rounded-2xl border border-dashed border-slate-800/70 text-sm text-slate-400">
+                  No cost data available yet.
+                </div>
+              )}
             </div>
           </div>
           <div className="glass-panel rounded-3xl p-6">
@@ -194,6 +227,14 @@ export default function DashboardPage() {
               Top spend by service
             </p>
             <ul className="mt-4 space-y-3 text-sm text-slate-200">
+              {loading && (
+                <li className="h-16 animate-pulse rounded-2xl border border-slate-800/70 bg-slate-950/40" />
+              )}
+              {!loading && topServices.length === 0 && (
+                <li className="rounded-2xl border border-dashed border-slate-800/70 px-4 py-4 text-sm text-slate-400">
+                  No service breakdown available yet.
+                </li>
+              )}
               {topServices.map(([service, count]) => (
                 <li
                   key={service}
@@ -210,6 +251,14 @@ export default function DashboardPage() {
           <div className="glass-panel rounded-3xl p-6">
             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Recent anomalies</p>
             <ul className="mt-4 space-y-3 text-sm text-slate-200">
+              {loading && (
+                <li className="h-20 animate-pulse rounded-2xl border border-slate-800/70 bg-slate-950/40" />
+              )}
+              {!loading && anomalies.length === 0 && (
+                <li className="rounded-2xl border border-dashed border-slate-800/70 px-4 py-4 text-sm text-slate-400">
+                  No anomalies detected for this window.
+                </li>
+              )}
               {anomalies.slice(0, 4).map((a) => (
                 <li key={a.id} className="rounded-2xl border border-slate-800/70 bg-slate-950/40 p-3">
                   <p className="text-white">

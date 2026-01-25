@@ -14,9 +14,15 @@ setup_logging(settings.log_level)
 
 app = FastAPI(title="CloudPulse API", version="0.1.0")
 
+frontend_origins = [
+    origin.strip()
+    for origin in settings.frontend_origin.split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_origin],
+    allow_origins=frontend_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
