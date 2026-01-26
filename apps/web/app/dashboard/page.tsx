@@ -32,6 +32,7 @@ type Anomaly = {
 
 const mockMode = process.env.NEXT_PUBLIC_MOCK_MODE === "1";
 const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
+const selectedSubKey = "cloudpulse-selected-subscription";
 
 function hasDemoSession(): boolean {
   if (!demoMode) return false;
@@ -61,7 +62,12 @@ export default function DashboardPage() {
         const account = accounts[0] || null;
         const token = await getAccessToken(account);
         const subs = await apiFetch<{ id: string; display_name: string }[]>("/subscriptions", token);
-        const subId = subs[0]?.id;
+        let preferred: string | null = null;
+        if (typeof window !== "undefined") {
+          preferred = localStorage.getItem(selectedSubKey);
+        }
+        const subId =
+          subs.find((sub) => sub.id === preferred)?.id || subs[0]?.id;
         if (!subId) return;
         setSubscriptionId(subId);
         const summaryData = await apiFetch<Summary>(`/summary?subscription_id=${subId}`, token);

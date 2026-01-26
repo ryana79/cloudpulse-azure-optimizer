@@ -14,6 +14,9 @@ type Subscription = {
 
 const mockMode = process.env.NEXT_PUBLIC_MOCK_MODE === "1";
 const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
+const subsCacheKey = "cloudpulse-subscriptions-cache";
+const subsCacheTtlMs = 5 * 60 * 1000;
+const selectedSubKey = "cloudpulse-selected-subscription";
 
 function hasDemoSession(): boolean {
   if (!demoMode) return false;
@@ -30,16 +33,28 @@ export default function ConnectPage() {
   const [subs, setSubs] = useState<Subscription[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       try {
+        setError(null);
         const account = accounts[0] || null;
         const token = await getAccessToken(account);
         const data = await apiFetch<Subscription[]>("/subscriptions", token);
         setSubs(data);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            subsCacheKey,
+            JSON.stringify({ timestamp: Date.now(), data })
+          );
+        }
       } catch (err: any) {
         setError(err.message);
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
       }
     };
 
@@ -55,6 +70,24 @@ export default function ConnectPage() {
       router.push("/login");
       return;
     }
+    if (typeof window !== "undefined") {
+      const cached = localStorage.getItem(subsCacheKey);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached) as {
+            timestamp: number;
+            data: Subscription[];
+          };
+          if (Date.now() - parsed.timestamp < subsCacheTtlMs) {
+            setSubs(parsed.data);
+            setIsLoading(false);
+            setIsRefreshing(true);
+          }
+        } catch {
+          localStorage.removeItem(subsCacheKey);
+        }
+      }
+    }
     load();
   }, [accounts, router]);
 
@@ -66,6 +99,14 @@ export default function ConnectPage() {
     try {
       const account = accounts[0] || null;
       const token = await getAccessToken(account);
+      if (typeof window !== "undefined") {
+        const preferred = selected[0] || "";
+        if (preferred) {
+          localStorage.setItem(selectedSubKey, preferred);
+        } else {
+          localStorage.removeItem(selectedSubKey);
+        }
+      }
       await apiFetch("/ingest", token, {
         method: "POST",
         body: JSON.stringify({ subscription_ids: selected }),
@@ -93,7 +134,14 @@ export default function ConnectPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
               Subscription inventory
             </p>
-            {subs.length === 0 ? (
+            {isRefreshing && (
+              <p className="mt-2 text-xs text-slate-400">Refreshing subscriptions...</p>
+            )}
+            {isLoading ? (
+              <div className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-300">
+                Loading subscriptions...
+              </div>
+            ) : subs.length === 0 ? (
               <div className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-300">
                 No subscriptions found. You may not have RBAC Reader access. Ask your admin to
                 grant Reader on the subscription.
