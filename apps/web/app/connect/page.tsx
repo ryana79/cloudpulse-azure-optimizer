@@ -17,6 +17,7 @@ const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
 const subsCacheKey = "cloudpulse-subscriptions-cache";
 const subsCacheTtlMs = 5 * 60 * 1000;
 const selectedSubKey = "cloudpulse-selected-subscription";
+const selectedSubsKey = "cloudpulse-selected-subscriptions";
 
 function hasDemoSession(): boolean {
   if (!demoMode) return false;
@@ -106,6 +107,7 @@ export default function ConnectPage() {
         } else {
           localStorage.removeItem(selectedSubKey);
         }
+        localStorage.setItem(selectedSubsKey, JSON.stringify(selected));
       }
       await apiFetch("/ingest", token, {
         method: "POST",

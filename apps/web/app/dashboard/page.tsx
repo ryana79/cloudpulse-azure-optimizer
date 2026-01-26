@@ -30,9 +30,68 @@ type Anomaly = {
   cost: number;
 };
 
+type Subscription = {
+  id: string;
+  display_name: string;
+};
+
+const combineSummaries = (summaries: Summary[]): Summary => {
+  const serviceTotals = new Map<string, number>();
+  const regionTotals: Record<string, number> = {};
+  const typeTotals: Record<string, number> = {};
+
+  let costTotal = 0;
+  let findingsTotal = 0;
+
+  for (const summary of summaries) {
+    costTotal += summary.cost_total_30d;
+    findingsTotal += summary.findings_count;
+
+    for (const [service, value] of summary.top_services) {
+      serviceTotals.set(service, (serviceTotals.get(service) ?? 0) + value);
+    }
+    for (const [region, value] of Object.entries(summary.inventory_by_region)) {
+      regionTotals[region] = (regionTotals[region] ?? 0) + value;
+    }
+    for (const [type, value] of Object.entries(summary.inventory_by_type)) {
+      typeTotals[type] = (typeTotals[type] ?? 0) + value;
+    }
+  }
+
+  const top_services = Array.from(serviceTotals.entries()).sort((a, b) => b[1] - a[1]);
+
+  return {
+    cost_total_30d: costTotal,
+    top_services,
+    inventory_by_region: regionTotals,
+    inventory_by_type: typeTotals,
+    findings_count: findingsTotal,
+  };
+};
+
+const combineCosts = (points: CostPoint[]): CostPoint[] => {
+  const byDate = new Map<string, number>();
+  for (const point of points) {
+    byDate.set(point.date, (byDate.get(point.date) ?? 0) + point.cost);
+  }
+  return Array.from(byDate.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([date, cost]) => ({ date, cost }));
+};
+
+const combineAnomalies = (items: Anomaly[]): Anomaly[] => {
+  return [...items].sort((a, b) => {
+    if (a.date === b.date) {
+      return b.z_score - a.z_score;
+    }
+    return b.date.localeCompare(a.date);
+  });
+};
+
 const mockMode = process.env.NEXT_PUBLIC_MOCK_MODE === "1";
 const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
 const selectedSubKey = "cloudpulse-selected-subscription";
+const selectedSubsKey = "cloudpulse-selected-subscriptions";
 
 function hasDemoSession(): boolean {
   if (!demoMode) return false;
@@ -46,6 +105,8 @@ function hasDemoSession(): boolean {
 export default function DashboardPage() {
   const { accounts } = useMsal();
   const router = useRouter();
+  const [availableSubs, setAvailableSubs] = useState<Subscription[]>([]);
+  const [selectedSubs, setSelectedSubs] = useState<string[]>([]);
   const [subscriptionId, setSubscriptionId] = useState<string>("");
   const [summary, setSummary] = useState<Summary | null>(null);
   const [costs, setCosts] = useState<CostPoint[]>([]);
@@ -59,26 +120,41 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
+        setError(null);
+        setLoading(true);
         const account = accounts[0] || null;
         const token = await getAccessToken(account);
-        const subs = await apiFetch<{ id: string; display_name: string }[]>("/subscriptions", token);
+        const subs = await apiFetch<Subscription[]>("/subscriptions", token);
+        setAvailableSubs(subs);
+
         let preferred: string | null = null;
+        let preferredList: string[] = [];
         if (typeof window !== "undefined") {
           preferred = localStorage.getItem(selectedSubKey);
+          const storedList = localStorage.getItem(selectedSubsKey);
+          if (storedList) {
+            try {
+              preferredList = JSON.parse(storedList);
+            } catch {
+              preferredList = [];
+            }
+          }
         }
-        const subId =
-          subs.find((sub) => sub.id === preferred)?.id || subs[0]?.id;
-        if (!subId) return;
-        setSubscriptionId(subId);
-        const summaryData = await apiFetch<Summary>(`/summary?subscription_id=${subId}`, token);
-        const costData = await apiFetch<{ points: CostPoint[] }>(
-          `/cost/timeseries?subscription_id=${subId}`,
-          token
-        );
-        const anomaliesData = await apiFetch<Anomaly[]>(`/anomalies?subscription_id=${subId}`, token);
-        setSummary(summaryData);
-        setCosts(costData.points);
-        setAnomalies(anomaliesData);
+
+        const validList = preferredList.filter((id) => subs.some((sub) => sub.id === id));
+        const fallbackId =
+          subs.find((sub) => sub.id === preferred)?.id || subs[0]?.id || "";
+        const selected = validList.length > 0 ? validList : fallbackId ? [fallbackId] : [];
+
+        if (selected.length === 0) return;
+        setSelectedSubs(selected);
+        setSubscriptionId(selected[0]);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(selectedSubsKey, JSON.stringify(selected));
+          localStorage.setItem(selectedSubKey, selected[0]);
+        }
+
+        await refreshData(selected, token);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -101,8 +177,59 @@ export default function DashboardPage() {
     load();
   }, [accounts, router]);
 
+  const refreshData = async (subIds: string[], tokenOverride?: string) => {
+    const account = accounts[0] || null;
+    const token = tokenOverride ?? (await getAccessToken(account));
+    const results = await Promise.all(
+      subIds.map(async (subId) => {
+        const [summaryData, costData, anomaliesData] = await Promise.all([
+          apiFetch<Summary>(`/summary?subscription_id=${subId}`, token),
+          apiFetch<{ points: CostPoint[] }>(`/cost/timeseries?subscription_id=${subId}`, token),
+          apiFetch<Anomaly[]>(`/anomalies?subscription_id=${subId}`, token),
+        ]);
+        return { summaryData, costData, anomaliesData };
+      })
+    );
+
+    const combinedSummary = combineSummaries(results.map((item) => item.summaryData));
+    const combinedCosts = combineCosts(results.flatMap((item) => item.costData.points));
+    const combinedAnomalies = combineAnomalies(results.flatMap((item) => item.anomaliesData));
+
+    setSummary(combinedSummary);
+    setCosts(combinedCosts);
+    setAnomalies(combinedAnomalies);
+  };
+
+  const toggleSubscription = async (id: string) => {
+    const next = selectedSubs.includes(id)
+      ? selectedSubs.filter((sub) => sub !== id)
+      : [...selectedSubs, id];
+    if (next.length === 0) {
+      return;
+    }
+    setSelectedSubs(next);
+    setSubscriptionId(next[0]);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(selectedSubsKey, JSON.stringify(next));
+      localStorage.setItem(selectedSubKey, next[0]);
+    }
+    try {
+      setError(null);
+      setLoading(true);
+      await refreshData(next);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const topServices = useMemo(() => summary?.top_services ?? [], [summary]);
   const dataMode = mockMode ? "Mock" : demoMode ? "Demo" : "Live";
+  const selectionLabel =
+    selectedSubs.length > 1 ? `${selectedSubs.length} subscriptions` : subscriptionId || "Not selected";
+  const selectionDetail =
+    selectedSubs.length > 1 ? "Combined view" : subscriptionId ? "Single subscription" : "";
 
   const askCopilot = async () => {
     try {
@@ -152,7 +279,7 @@ export default function DashboardPage() {
             <span className="rounded-full border border-slate-700/70 px-3 py-1">
               Mode: {dataMode}
             </span>
-            {subscriptionId && (
+            {selectedSubs.length === 1 && subscriptionId && (
               <span className="rounded-full border border-slate-700/70 px-3 py-1">
                 Sub: {subscriptionId.slice(0, 8)}...
               </span>
@@ -167,6 +294,37 @@ export default function DashboardPage() {
             </button>
           )}
         </header>
+        {availableSubs.length > 0 && (
+          <section className="glass-panel rounded-3xl p-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Subscriptions</p>
+                <p className="mt-2 text-sm text-slate-300">
+                  Choose one or more subscriptions to compare or combine insights.
+                </p>
+              </div>
+              <div className="text-xs text-slate-400">{selectionDetail}</div>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {availableSubs.map((sub) => {
+                const selected = selectedSubs.includes(sub.id);
+                return (
+                  <button
+                    key={sub.id}
+                    onClick={() => toggleSubscription(sub.id)}
+                    className={`rounded-full border px-4 py-2 text-xs transition ${
+                      selected
+                        ? "border-cyan-400/70 bg-cyan-400/10 text-cyan-100"
+                        : "border-slate-700/70 bg-slate-950/60 text-slate-300 hover:border-slate-500/70"
+                    }`}
+                  >
+                    {sub.display_name}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
         {loading && (
           <div className="grid gap-4 md:grid-cols-3">
             {["30d Cost", "Findings", "Subscription"].map((label) => (
@@ -194,8 +352,10 @@ export default function DashboardPage() {
             </div>
             <div className="glass-panel rounded-3xl p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Subscription</p>
-              <p className="mt-3 text-sm text-white">{subscriptionId || "Not selected"}</p>
-              <p className="mt-2 text-xs text-slate-400">{dataMode} dataset</p>
+              <p className="mt-3 text-sm text-white">{selectionLabel}</p>
+              <p className="mt-2 text-xs text-slate-400">
+                {dataMode} dataset · {selectionDetail || "Selection"}
+              </p>
             </div>
           </div>
         )}
