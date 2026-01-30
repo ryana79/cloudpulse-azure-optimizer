@@ -45,6 +45,7 @@ CloudPulse is a multi-tenant Azure Cloud Optimization Dashboard. It uses Microso
 
 - `apps/api`: FastAPI backend, Azure OBO, engine, DB
 - `apps/web`: Next.js frontend
+- `k8s`: Kubernetes manifests for free/local clusters
 - `docs`: architecture + security notes
 
 ## Staged Demo (No Sign-In)
@@ -59,6 +60,11 @@ The frontend will auto-enter demo mode and call the API with `X-Demo-Mode=1`, wh
 ## Mock Mode (Signed In)
 
 Set `MOCK_MODE=1` and use Demo Login on `/login`. This loads fixtures and populates the DB for dashboards, anomalies, and copilot.
+
+## Kubernetes (Free Demo)
+
+Minimal manifests are included under `k8s/` for local clusters (kind, k3d, minikube) or a single-node k3s VM.
+See `k8s/README.md` for setup and notes.
 
 ## Environment Variables (Frontend)
 

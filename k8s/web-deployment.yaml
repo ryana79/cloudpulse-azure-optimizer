@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudpulse-web
+  namespace: cloudpulse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudpulse-web
+  template:
+    metadata:
+      labels:
+        app: cloudpulse-web
+    spec:
+      containers:
+        - name: web
+          image: cloudpulse-web:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_API_BASE
+              value: "http://cloudpulse-api.cloudpulse.svc.cluster.local:8000"
+            - name: NEXT_PUBLIC_DEMO_MODE
+              value: "1"
