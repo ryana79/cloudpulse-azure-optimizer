@@ -1,0 +1,23 @@
+namespace: cloudpulse
+
+web:
+  image:
+    repository: cloudpulse-web
+    tag: dev
+  env:
+    NEXT_PUBLIC_API_BASE: "http://cloudpulse-api.cloudpulse.svc.cluster.local:8000"
+    NEXT_PUBLIC_DEMO_MODE: "1"
+
+api:
+  image:
+    repository: cloudpulse-api
+    tag: dev
+  env:
+    DEMO_MODE: "1"
+    MOCK_MODE: "1"
+    API_HOST: "0.0.0.0"
+    API_PORT: "8000"
+
+ingress:
+  enabled: true
+  host: cloudpulse.local

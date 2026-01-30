@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudpulse-api
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudpulse-api
+  template:
+    metadata:
+      labels:
+        app: cloudpulse-api
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DEMO_MODE
+              value: "{{ .Values.api.env.DEMO_MODE }}"
+            - name: MOCK_MODE
+              value: "{{ .Values.api.env.MOCK_MODE }}"
+            - name: API_HOST
+              value: "{{ .Values.api.env.API_HOST }}"
+            - name: API_PORT
+              value: "{{ .Values.api.env.API_PORT }}"

@@ -41,3 +41,20 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
 
+  kubernetes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz -o kubeconform.tar.gz
+          tar -xzf kubeconform.tar.gz kubeconform
+          chmod +x kubeconform
+      - name: Validate raw manifests
+        run: ./kubeconform -ignore-missing-schemas -summary k8s/*.yaml
+      - name: Validate Helm template
+        run: helm template cloudpulse ./helm/cloudpulse | ./kubeconform -ignore-missing-schemas -summary -
+

@@ -66,6 +66,10 @@ Set `MOCK_MODE=1` and use Demo Login on `/login`. This loads fixtures and popula
 Minimal manifests are included under `k8s/` for local clusters (kind, k3d, minikube) or a single-node k3s VM.
 See `k8s/README.md` for setup and notes.
 
+## Helm (Free Demo)
+
+A minimal Helm chart lives under `helm/cloudpulse` for the same local/demo clusters.
+
 ## Environment Variables (Frontend)
 
 ```

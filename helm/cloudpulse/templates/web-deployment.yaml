@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudpulse-web
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudpulse-web
+  template:
+    metadata:
+      labels:
+        app: cloudpulse-web
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_API_BASE
+              value: "{{ .Values.web.env.NEXT_PUBLIC_API_BASE }}"
+            - name: NEXT_PUBLIC_DEMO_MODE
+              value: "{{ .Values.web.env.NEXT_PUBLIC_DEMO_MODE }}"
