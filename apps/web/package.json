@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^3.27.0",
-    "@azure/msal-react": "^2.0.14",
+    "@azure/msal-react": "^5.0.2",
     "classnames": "^2.5.1",
     "next": "^16.1.4",
     "react": "18.2.0",
