@@ -10,6 +10,8 @@ services:
     envVars:
       - key: ENV
         value: production
+      - key: PYTHON_VERSION
+        value: 3.11.9
       - key: DEMO_MODE
         value: "1"
       - key: MOCK_MODE

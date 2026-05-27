@@ -7,10 +7,17 @@ from config import settings
 
 
 def _build_engine():
+    database_url = _database_url()
     connect_args = {}
-    if settings.database_url.startswith("sqlite"):
+    if database_url.startswith("sqlite"):
         connect_args = {"check_same_thread": False}
-    return create_engine(settings.database_url, connect_args=connect_args, future=True)
+    return create_engine(database_url, connect_args=connect_args, future=True)
+
+
+def _database_url() -> str:
+    if settings.demo_mode:
+        return "sqlite:///./cloudpulse.db"
+    return settings.database_url
 
 
 engine = _build_engine()
