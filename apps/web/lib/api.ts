@@ -5,6 +5,7 @@ import { apiRequest, msalInstance } from "./auth";
 const apiBase = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
 const mockMode = process.env.NEXT_PUBLIC_MOCK_MODE === "1";
 const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
+const requestTimeoutMs = 15000;
 
 function isDemoSession(): boolean {
   if (!demoMode) return false;
@@ -34,18 +35,31 @@ export async function apiFetch<T>(
   token: string,
   options?: RequestInit
 ): Promise<T> {
-  const response = await fetch(`${apiBase}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...(isDemoSession() ? { "X-Demo-Mode": "1" } : {}),
-      ...(options?.headers || {}),
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`API error ${response.status}`);
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), requestTimeoutMs);
+
+  try {
+    const response = await fetch(`${apiBase}${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...(isDemoSession() ? { "X-Demo-Mode": "1" } : {}),
+        ...(options?.headers || {}),
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`API error ${response.status}`);
+    }
+    return response.json() as Promise<T>;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("API request timed out. The Render API may still be starting.");
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
   }
-  return response.json() as Promise<T>;
 }
 

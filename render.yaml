@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: cloudpulse-azure-optimizer
+    runtime: python
+    plan: free
+    rootDir: apps/api
+    buildCommand: poetry install --no-interaction --no-root
+    startCommand: poetry run uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: ENV
+        value: production
+      - key: DEMO_MODE
+        value: "1"
+      - key: MOCK_MODE
+        value: "0"
+      - key: FRONTEND_ORIGIN
+        value: https://cloudpulse-ai.com
+      - key: DATABASE_URL
+        value: sqlite:///./cloudpulse.db

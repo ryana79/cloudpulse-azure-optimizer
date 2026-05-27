@@ -141,7 +141,7 @@ export default function ConnectPage() {
             )}
             {isLoading ? (
               <div className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-300">
-                Loading subscriptions...
+                Loading subscriptions from the API. This can take a moment if Render is waking up.
               </div>
             ) : subs.length === 0 ? (
               <div className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-300">
@@ -190,6 +190,7 @@ export default function ConnectPage() {
             </ul>
             <button
               onClick={save}
+              disabled={selected.length === 0 || isLoading}
               className="w-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20"
             >
               Save and Ingest

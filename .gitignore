@@ -21,4 +21,5 @@ venv/
 alembic.ini.bak
 logs/
 *.log
+*.tsbuildinfo
 
