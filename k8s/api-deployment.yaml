@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudpulse-api
+  namespace: cloudpulse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudpulse-api
+  template:
+    metadata:
+      labels:
+        app: cloudpulse-api
+    spec:
+      containers:
+        - name: api
+          image: cloudpulse-api:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DEMO_MODE
+              value: "1"
+            - name: MOCK_MODE
+              value: "1"
+            - name: API_HOST
+              value: "0.0.0.0"
+            - name: API_PORT
+              value: "8000"

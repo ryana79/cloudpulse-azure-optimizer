@@ -1,0 +1,23 @@
+[
+  {"date": "2026-01-02", "cost": 12.4, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-03", "cost": 11.9, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-04", "cost": 12.1, "service": "Storage", "resource_group": "rg-data", "tag": "env:dev"},
+  {"date": "2026-01-05", "cost": 13.0, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-06", "cost": 12.6, "service": "Networking", "resource_group": "rg-net", "tag": "env:dev"},
+  {"date": "2026-01-07", "cost": 12.2, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-08", "cost": 12.7, "service": "Storage", "resource_group": "rg-data", "tag": "env:dev"},
+  {"date": "2026-01-09", "cost": 12.0, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-10", "cost": 12.3, "service": "Networking", "resource_group": "rg-net", "tag": "env:dev"},
+  {"date": "2026-01-11", "cost": 11.8, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-12", "cost": 12.4, "service": "Storage", "resource_group": "rg-data", "tag": "env:dev"},
+  {"date": "2026-01-13", "cost": 12.1, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-14", "cost": 12.5, "service": "Networking", "resource_group": "rg-net", "tag": "env:dev"},
+  {"date": "2026-01-15", "cost": 12.3, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-16", "cost": 12.2, "service": "Storage", "resource_group": "rg-data", "tag": "env:dev"},
+  {"date": "2026-01-17", "cost": 12.0, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-18", "cost": 12.4, "service": "Networking", "resource_group": "rg-net", "tag": "env:dev"},
+  {"date": "2026-01-19", "cost": 58.2, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"},
+  {"date": "2026-01-20", "cost": 12.1, "service": "Storage", "resource_group": "rg-data", "tag": "env:dev"},
+  {"date": "2026-01-21", "cost": 12.3, "service": "Compute", "resource_group": "rg-app", "tag": "env:dev"}
+]
+

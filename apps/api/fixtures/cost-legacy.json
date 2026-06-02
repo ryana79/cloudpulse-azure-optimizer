@@ -1,0 +1,22 @@
+[
+  {"date": "2026-01-02", "cost": 19.4, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-03", "cost": 18.9, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-04", "cost": 20.6, "service": "Storage", "resource_group": "rg-archive", "tag": "env:prod"},
+  {"date": "2026-01-05", "cost": 19.8, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-06", "cost": 21.2, "service": "Networking", "resource_group": "rg-edge", "tag": "env:prod"},
+  {"date": "2026-01-07", "cost": 19.6, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-08", "cost": 22.1, "service": "Storage", "resource_group": "rg-archive", "tag": "env:prod"},
+  {"date": "2026-01-09", "cost": 20.0, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-10", "cost": 21.0, "service": "Networking", "resource_group": "rg-edge", "tag": "env:prod"},
+  {"date": "2026-01-11", "cost": 19.7, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-12", "cost": 22.4, "service": "Storage", "resource_group": "rg-archive", "tag": "env:prod"},
+  {"date": "2026-01-13", "cost": 20.3, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-14", "cost": 21.6, "service": "Networking", "resource_group": "rg-edge", "tag": "env:prod"},
+  {"date": "2026-01-15", "cost": 20.1, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-16", "cost": 22.0, "service": "Storage", "resource_group": "rg-archive", "tag": "env:prod"},
+  {"date": "2026-01-17", "cost": 19.8, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-18", "cost": 21.4, "service": "Networking", "resource_group": "rg-edge", "tag": "env:prod"},
+  {"date": "2026-01-19", "cost": 20.2, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"},
+  {"date": "2026-01-20", "cost": 22.2, "service": "Storage", "resource_group": "rg-archive", "tag": "env:prod"},
+  {"date": "2026-01-21", "cost": 20.0, "service": "Compute", "resource_group": "rg-legacy", "tag": "env:prod"}
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-app/providers/Microsoft.Compute/virtualMachines/vm-demo",
+    "name": "vm-demo",
+    "resource_type": "Microsoft.Compute/virtualMachines",
+    "region": "eastus",
+    "tags": {"env": "dev"},
+    "properties": {}
+  },
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-app/providers/Microsoft.Compute/disks/disk-orphan",
+    "name": "disk-orphan",
+    "resource_type": "Microsoft.Compute/disks",
+    "region": "eastus",
+    "tags": {"owner": "team-a", "env": "dev", "costcenter": "100"},
+    "properties": {"managedBy": null}
+  },
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-net/providers/Microsoft.Network/publicIPAddresses/ip-orphan",
+    "name": "ip-orphan",
+    "resource_type": "Microsoft.Network/publicIPAddresses",
+    "region": "eastus",
+    "tags": {"owner": "team-a", "env": "dev", "costcenter": "100"},
+    "properties": {"ipConfiguration": null}
+  },
+  {
+    "resource_id": "/subscriptions/sub-001/resourceGroups/rg-data/providers/Microsoft.Compute/snapshots/snap-old",
+    "name": "snap-old",
+    "resource_type": "Microsoft.Compute/snapshots",
+    "region": "eastus2",
+    "tags": {"owner": "team-a", "env": "dev", "costcenter": "100"},
+    "properties": {"timeCreated": "2025-10-01T00:00:00Z"}
+  }
+]
+
