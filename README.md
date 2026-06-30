@@ -1,7 +1,7 @@
 # CloudPulse
 
-[![CI](https://github.com/your-org/cloudpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/cloudpulse/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/your-org/cloudpulse/actions/workflows/codeql.yml/badge.svg)](https://github.com/your-org/cloudpulse/actions/workflows/codeql.yml)
+[![CI](https://github.com/ryana79/cloudpulse-azure-optimizer/actions/workflows/ci.yml/badge.svg)](https://github.com/ryana79/cloudpulse-azure-optimizer/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ryana79/cloudpulse-azure-optimizer/actions/workflows/codeql.yml/badge.svg)](https://github.com/ryana79/cloudpulse-azure-optimizer/actions/workflows/codeql.yml)
 
 CloudPulse is a multi-tenant Azure Cloud Optimization Dashboard. It uses Microsoft Entra ID for sign-in and delegates Azure access with OAuth2 On-Behalf-Of. Each tenant and user sees only their data.
 
