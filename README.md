@@ -33,10 +33,10 @@ flowchart LR
 
 ## Engineering Highlights
 
-- **Multi-tenant identity done properly**: Entra ID sign-in with OAuth2 On-Behalf-Of delegation, so the backend accesses Azure strictly with each user's own permissions — no shared service credentials, and tenant data is isolated at the query layer.
+- **Multi-tenant identity done properly**: Entra ID sign-in with OAuth2 On-Behalf-Of delegation, so the backend accesses Azure strictly with each user's own permissions. There are no shared service credentials, and tenant data is isolated at the query layer.
 - **Deterministic optimization engine**: 6 cost/hygiene rules (underutilized VMs, unattached disks, orphaned public IPs, stale snapshots, missing governance tags, Advisor ingestion) that emit structured findings with evidence and estimated savings.
 - **Statistical anomaly detection**: rolling-window z-score detector over daily cost series with a minimum-spend floor to suppress noise on small subscriptions.
-- **Tested where it counts**: the engine is covered by a 17-case pytest suite exercising thresholds, window boundaries, and severity/savings mapping — run it with `make test`.
+- **Tested where it counts**: the engine is covered by a 17-case pytest suite exercising thresholds, window boundaries, and severity/savings mapping. Run it with `make test`.
 - **CI hygiene**: GitHub Actions CI, CodeQL scanning, and Dependabot on every push.
 - **Fixture-backed demo mode**: the full dashboard, anomaly, and copilot flows run against realistic Azure API fixtures with zero cloud credentials.
 
