@@ -5,14 +5,40 @@
 
 CloudPulse is a multi-tenant Azure Cloud Optimization Dashboard. It uses Microsoft Entra ID for sign-in and delegates Azure access with OAuth2 On-Behalf-Of. Each tenant and user sees only their data.
 
-## Highlights
+## Architecture
 
-- FastAPI backend with SQLAlchemy + Alembic
-- Next.js + TypeScript + Tailwind + Recharts frontend
-- Multi-tenant Microsoft identity platform auth
-- Deterministic optimization engine + anomaly detection
-- Grok-powered Copilot with retrieval-grounded context packs
-- Robust mock mode for demos
+```mermaid
+flowchart LR
+  subgraph Client
+    WEB[Next.js + TypeScript + Tailwind<br/>MSAL sign-in, Recharts dashboards]
+  end
+  subgraph API["FastAPI Backend"]
+    AUTH[Entra ID JWT validation<br/>+ OAuth2 On-Behalf-Of]
+    ENGINE[Optimization Engine<br/>6 deterministic rules + z-score anomaly detection]
+    COPILOT[Grok Copilot<br/>retrieval-grounded context packs]
+    DB[(SQLAlchemy + Alembic<br/>SQLite / Postgres)]
+  end
+  subgraph Azure["Azure APIs (per-tenant, delegated)"]
+    RG[Resource Graph]
+    COST[Cost Management]
+    MON[Monitor Metrics]
+    ADV[Advisor]
+  end
+  WEB -->|Bearer token| AUTH
+  AUTH -->|OBO token| RG & COST & MON & ADV
+  RG & COST & MON & ADV --> DB
+  DB --> ENGINE --> WEB
+  DB --> COPILOT --> WEB
+```
+
+## Engineering Highlights
+
+- **Multi-tenant identity done properly**: Entra ID sign-in with OAuth2 On-Behalf-Of delegation, so the backend accesses Azure strictly with each user's own permissions — no shared service credentials, and tenant data is isolated at the query layer.
+- **Deterministic optimization engine**: 6 cost/hygiene rules (underutilized VMs, unattached disks, orphaned public IPs, stale snapshots, missing governance tags, Advisor ingestion) that emit structured findings with evidence and estimated savings.
+- **Statistical anomaly detection**: rolling-window z-score detector over daily cost series with a minimum-spend floor to suppress noise on small subscriptions.
+- **Tested where it counts**: the engine is covered by a 17-case pytest suite exercising thresholds, window boundaries, and severity/savings mapping — run it with `make test`.
+- **CI hygiene**: GitHub Actions CI, CodeQL scanning, and Dependabot on every push.
+- **Fixture-backed demo mode**: the full dashboard, anomaly, and copilot flows run against realistic Azure API fixtures with zero cloud credentials.
 
 ## Local Development
 
@@ -50,7 +76,7 @@ CloudPulse is a multi-tenant Azure Cloud Optimization Dashboard. It uses Microso
 
 ## Staged Demo (No Sign-In)
 
-For recruiter demos, you can run CloudPulse without any Microsoft sign-in:
+You can run CloudPulse without any Microsoft sign-in:
 
 1) Set `NEXT_PUBLIC_DEMO_MODE=1` in `apps/web/.env.local`.
 2) Start the app (`make dev`) and open `/connect` or `/dashboard`.
@@ -104,21 +130,6 @@ If `apps/api/poetry.lock` or `apps/web/package-lock.json` are placeholders, rege
 
 - `cd apps/api && poetry lock`
 - `cd apps/web && npm install`
-
-## GitHub Repo Creation + Push
-
-1) Create a new GitHub repo (no README, no .gitignore).
-2) Run the init script:
-
-```
-./scripts/init_repo.sh
-```
-
-3) Push:
-
-```
-git push -u origin main
-```
 
 ## Security
 
